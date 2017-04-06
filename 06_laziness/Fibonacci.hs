@@ -91,3 +91,25 @@ instance Fractional (Stream Integer) where
 
 fibs3 :: Stream Integer
 fibs3 = x / (1 - x - x^2)
+
+-- exercise 7
+data Matrix = Matrix Integer Integer Integer Integer
+
+instance Show Matrix where
+  show (Matrix a b c d) = "[[" ++ show a ++ ", " ++ show b ++ "],[" ++ show c ++ "," ++ show d ++ "]]"
+
+instance Num Matrix where
+  fromInteger n = Matrix n 0 0 n
+  negate (Matrix a b c d) = Matrix (-a) (-b) (-c) (-d)
+  (Matrix a b c d) + (Matrix e f g h) = Matrix (a+e) (b+f) (c+g) (d+h)
+  (Matrix a b c d) * (Matrix e f g h) = Matrix (a*e + b*g) (a*f + b*h) (c*e + d*g) (c*f + d*h)
+
+fibBase :: Matrix
+fibBase = Matrix 1 1 1 0
+
+fib4 :: Integer -> Integer
+fib4 n = result
+    where Matrix _ result _ _ = fibBase ^ n
+
+fibs4 :: Stream Integer
+fibs4 = streamMap fib4 nats
