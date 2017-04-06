@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-missing-methods #-}
+
 import Data.List
 
 -- exercise 1
@@ -63,3 +66,28 @@ partialRuler idx = foldr1 interleaveStreams $ map streamRepeat [0..idx]
 
 ruler :: Stream Integer
 ruler = streamDiagonal $ streamMap partialRuler nats
+
+-- exercise 6
+
+x :: Stream Integer
+x = StreamCons 0 $ StreamCons 1 $ streamRepeat 0
+
+scalarMul :: Integer -> Stream Integer -> Stream Integer
+scalarMul k = streamMap (*k)
+
+scalarDiv :: Stream Integer -> Integer -> Stream Integer
+scalarDiv s k = streamMap (`div` k) s
+
+instance Num (Stream Integer) where
+  fromInteger n = StreamCons n $ streamRepeat 0
+  negate (StreamCons x xs) = StreamCons (negate x) (negate xs)
+  (StreamCons x xs) + (StreamCons y ys) = StreamCons (x + y) (xs + ys)
+  (StreamCons x xs) * b@(StreamCons y ys) = StreamCons (x * y) tail
+      where tail = (x `scalarMul` ys) + (xs * b)
+
+instance Fractional (Stream Integer) where
+  (StreamCons x xs) / (StreamCons y ys) = result
+      where result = StreamCons (x `div` y) ((xs - result * ys) `scalarDiv` y)
+
+fibs3 :: Stream Integer
+fibs3 = x / (1 - x - x^2)
