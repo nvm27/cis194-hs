@@ -7,6 +7,8 @@ import Editor
 import Scrabble
 import Sized
 
+import Data.Monoid
+
 data JoinList m a = Empty
                   | Single m a
                   | Append m (JoinList m a) (JoinList m a)
@@ -20,7 +22,7 @@ tag (Append m _ _) = m
 -- exercise 1
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
-a +++ b = Append (tag a `mappend` tag b) a b
+a +++ b = Append (tag a <> tag b) a b
 
 -- exercise 2.1
 
@@ -55,7 +57,7 @@ dropJ i (Single _ _) = Empty
 dropJ i (Append m l r)
   | i >= totalSize   = Empty
   | i >= lSize       = dropJ (i - lSize) r
-  | otherwise        = Append (tag newL `mappend` tag r) newL r
+  | otherwise        = newL +++ r
   where totalSize = (getSize . size) m
         lSize     = (getSize . size . tag) l
         newL      = dropJ i l
@@ -68,7 +70,7 @@ takeJ i _ | i <= 0     = Empty
 takeJ i s@(Single _ _) = s
 takeJ i a@(Append m l r)
   | i >= totalSize     = a
-  | i >= lSize         = Append (tag l `mappend` tag newR) l newR
+  | i >= lSize         = l +++ newR
   | otherwise          = takeJ i l
   where totalSize = (getSize . size) m
         lSize     = (getSize . size . tag) l
