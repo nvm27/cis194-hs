@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 module Golf where
 
 import Data.Char

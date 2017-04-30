@@ -1,4 +1,6 @@
-import Prelude hiding (foldr, foldl, foldl')
+{-# OPTIONS_GHC -Wall #-}
+
+import Prelude hiding (foldr, foldl)
 
 foldr :: (a -> b -> b) -> b -> [a] -> b
 foldr _ acc []     = acc
@@ -21,13 +23,17 @@ x ? y = x*y
 list :: [Int]
 list = [2, 3, undefined, 5, 0]
 
+okey :: Int
 okey = foldl (?) 1 list
+
+boom :: Int
 boom = foldl' (?) 1 list
 
 reverse' :: [a] -> [a]
 reverse' = foldl' (flip (:)) []
 
 -- foldr for infinite lists
+infinite :: [Integer]
 infinite = [1..]
 
 muchInfinite :: [Integer]

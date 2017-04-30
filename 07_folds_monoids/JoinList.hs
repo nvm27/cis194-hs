@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wall #-}
 {-# LANGUAGE FlexibleInstances #-}
 
 module JoinList where
@@ -53,7 +54,7 @@ indexJ i (Append _ a b)
 dropJ :: (Sized m, Monoid m) => Int -> JoinList m a -> JoinList m a
 dropJ _ Empty        = Empty
 dropJ i v | i <= 0   = v
-dropJ i (Single _ _) = Empty
+dropJ _ (Single _ _) = Empty
 dropJ i (Append m l r)
   | i >= totalSize   = Empty
   | i >= lSize       = dropJ (i - lSize) r
@@ -67,7 +68,7 @@ dropJ i (Append m l r)
 takeJ :: (Sized m, Monoid m) => Int -> JoinList m a -> JoinList m a
 takeJ _ Empty          = Empty
 takeJ i _ | i <= 0     = Empty
-takeJ i s@(Single _ _) = s
+takeJ _ s@(Single _ _) = s
 takeJ i a@(Append m l r)
   | i >= totalSize     = a
   | i >= lSize         = l +++ newR
@@ -108,4 +109,5 @@ initialBuffer = fromString $ unlines
   , "by the name of the file."
   ]
 
+main :: IO ()
 main = runEditor editor initialBuffer

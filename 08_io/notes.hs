@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -Wall #-}
+
+main :: IO ()
 -- main = putStrLn "Hello, Haskell!"
 -- main = putStrLn "Hello" >> putStrLn "world!"
 main = putStrLn "Please enter a number: " >> (readLn >>= (\n -> print (n+1)))

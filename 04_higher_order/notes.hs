@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 greaterThan100 :: [Integer] -> [Integer]
 -- greaterThan100 = filter (\x -> x > 100)
 greaterThan100 = filter (> 100)

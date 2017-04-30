@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 toDigits :: Integer -> [Integer]
 toDigits num
   | num <= 0  = []
@@ -37,11 +39,14 @@ doubleEveryOther' = reverse . doubleEveryOtherForward . reverse
 
 doubleEveryOtherLength :: [Integer] -> Int -> [Integer]
 doubleEveryOtherLength []  0        = []
+doubleEveryOtherLength []  _        = undefined
 doubleEveryOtherLength [x] 1        = [x]
+doubleEveryOtherLength [_] _        = undefined
 doubleEveryOtherLength (x:y:zs) len
   | len `mod` 2 == 0 = 2*x : y : doubleEveryOtherLength zs (len-2)
   | otherwise        = x : 2*y : doubleEveryOtherLength zs (len-2)
 
+doubleEveryOther'' :: [Integer] -> [Integer]
 doubleEveryOther'' xs = doubleEveryOtherLength xs (length xs)
 
 validate' :: Integer -> Bool

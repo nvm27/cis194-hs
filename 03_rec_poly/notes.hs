@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 data List t = E | C t (List t)
   deriving Show
 

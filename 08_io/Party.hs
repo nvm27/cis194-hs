@@ -1,9 +1,10 @@
+{-# OPTIONS_GHC -Wall -fno-warn-orphans #-}
+
 module Party where
 
 import Employee
 
 import Data.List
-import Data.Monoid
 import Data.Tree
 
 -- exercise 1

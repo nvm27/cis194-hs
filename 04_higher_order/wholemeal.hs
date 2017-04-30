@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 fun1 :: [Integer] -> Integer
 fun1 [] = 1
 fun1 (x:xs)

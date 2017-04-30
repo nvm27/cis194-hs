@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wall #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 -- exercise 3
@@ -5,7 +6,6 @@
 module Scrabble where
 
 import Data.Char
-import Data.Monoid
 
 newtype Score = Score Int
   deriving (Eq, Ord, Show, Num)

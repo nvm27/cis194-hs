@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 computeXOR :: Bool -> Bool -> Bool
 computeXOR False False = False
 computeXOR False True  = True

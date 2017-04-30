@@ -64,6 +64,7 @@ extractMessage (Unknown msg)   = msg
 whatWentWrong :: [LogMessage] -> [String]
 whatWentWrong = map extractMessage . inOrder . build . filter isImportant
 
+write :: IO ()
 write = do
   contents <- testWhatWentWrong parse whatWentWrong "error.log"
   writeFile "output.txt" (unlines contents)

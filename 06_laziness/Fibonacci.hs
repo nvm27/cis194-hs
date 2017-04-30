@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# OPTIONS_GHC -fno-warn-missing-methods #-}
+{-# OPTIONS_GHC -Wall -fno-warn-missing-methods #-}
 
 import Data.List
 
@@ -21,10 +21,10 @@ fibs2' = 0 : 1 : map op [2..]
   where op idx = fibs2' !! (idx-1) + fibs2' !! (idx-2)
 
 -- exercise 3
-data Stream a = StreamCons a (Stream a)
+data Stream a = Stream a (Stream a)
 
 streamToList :: Stream a -> [a]
-streamToList (StreamCons x xs) = x : streamToList xs
+streamToList (Stream x xs) = x : streamToList xs
 
 showStream :: Show a => Int -> Stream a -> String
 showStream n s = "[" ++ representation s ++ "...]"
@@ -35,13 +35,13 @@ instance Show a => Show (Stream a) where
 
 -- exercise 4
 streamRepeat :: a -> Stream a
-streamRepeat v = StreamCons v (streamRepeat v)
+streamRepeat v = Stream v (streamRepeat v)
 
 streamMap :: (a -> b) -> Stream a -> Stream b
-streamMap f (StreamCons x xs) = StreamCons (f x) (streamMap f xs)
+streamMap f (Stream x xs) = Stream (f x) (streamMap f xs)
 
 streamFromSeed :: (a -> a) -> a -> Stream a
-streamFromSeed f v = StreamCons v (streamFromSeed f (f v))
+streamFromSeed f v = Stream v (streamFromSeed f (f v))
 
 -- exercise 5
 nats :: Stream Integer
@@ -50,16 +50,16 @@ nats = streamFromSeed (+1) 0
 -- ruler using interleaveStream
 -- really not optimal...
 interleaveStreams :: Stream a -> Stream a -> Stream a
-interleaveStreams (StreamCons x xs) (StreamCons y ys) = StreamCons x $ StreamCons y $ interleaveStreams xs ys
+interleaveStreams (Stream x xs) (Stream y ys) = Stream x $ Stream y $ interleaveStreams xs ys
 
 streamHead :: Stream a -> a
-streamHead (StreamCons x _) = x
+streamHead (Stream x _) = x
 
 streamTail :: Stream a -> Stream a
-streamTail (StreamCons _ xs) = xs
+streamTail (Stream _ xs) = xs
 
 streamDiagonal :: Stream (Stream a) -> Stream a
-streamDiagonal (StreamCons x xs) = StreamCons (streamHead x) (streamDiagonal (streamMap streamTail xs))
+streamDiagonal (Stream x xs) = Stream (streamHead x) (streamDiagonal (streamMap streamTail xs))
 
 partialRuler :: Integer -> Stream Integer
 partialRuler idx = foldr1 interleaveStreams $ map streamRepeat [0..idx]
@@ -70,7 +70,7 @@ ruler = streamDiagonal $ streamMap partialRuler nats
 -- exercise 6
 
 x :: Stream Integer
-x = StreamCons 0 $ StreamCons 1 $ streamRepeat 0
+x = Stream 0 $ Stream 1 $ streamRepeat 0
 
 scalarMul :: Integer -> Stream Integer -> Stream Integer
 scalarMul k = streamMap (*k)
@@ -79,15 +79,15 @@ scalarDiv :: Stream Integer -> Integer -> Stream Integer
 scalarDiv s k = streamMap (`div` k) s
 
 instance Num (Stream Integer) where
-  fromInteger n = StreamCons n $ streamRepeat 0
-  negate (StreamCons x xs) = StreamCons (negate x) (negate xs)
-  (StreamCons x xs) + (StreamCons y ys) = StreamCons (x + y) (xs + ys)
-  (StreamCons x xs) * b@(StreamCons y ys) = StreamCons (x * y) tail
-      where tail = (x `scalarMul` ys) + (xs * b)
+  fromInteger n = Stream n $ streamRepeat 0
+  negate (Stream x xs) = Stream (negate x) (negate xs)
+  (Stream x xs) + (Stream y ys) = Stream (x + y) (xs + ys)
+  (Stream x xs) * b@(Stream y ys) = Stream (x * y) tail'
+      where tail' = (x `scalarMul` ys) + (xs * b)
 
 instance Fractional (Stream Integer) where
-  (StreamCons x xs) / (StreamCons y ys) = result
-      where result = StreamCons (x `div` y) ((xs - result * ys) `scalarDiv` y)
+  (Stream x xs) / (Stream y ys) = result'
+      where result' = Stream (x `div` y) ((xs - result' * ys) `scalarDiv` y)
 
 fibs3 :: Stream Integer
 fibs3 = x / (1 - x - x^2)

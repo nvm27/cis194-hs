@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wall #-}
+
 import Data.List
 
 combination :: Integer -> Integer -> Integer
